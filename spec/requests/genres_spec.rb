@@ -5,7 +5,9 @@ RSpec.describe "/genres", type: :request do
   # Genre. As you add validations to Genre, be sure to
   # adjust the attributes here as well.
   let(:mock_genre) { 
-    {'name' => 'monkey!'}
+    { 
+      name: 'monkey!'
+    }
   }
   let(:valid_attributes) {
     skip("C'mon Add a hash of attributes valid for your model")
@@ -24,7 +26,6 @@ RSpec.describe "/genres", type: :request do
     {}
   }
 
-=begin
   describe "GET /index" do
     it "renders a successful response" do
       Genre.create! valid_attributes
@@ -32,6 +33,7 @@ RSpec.describe "/genres", type: :request do
       expect(response).to be_successful
     end
   end
+=begin
 
   describe "GET /show" do
     it "renders a successful response" do
