@@ -17,11 +17,22 @@ rescue ActiveRecordo::PendingMigrationError => e
 end 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.use_transactional_fixtures = true
+  #config.use_transactional_fixtures = true
 
   config.infer_spec_type_from_file_location!
 
   config.filter_rails_from_backtrace!
   
 end
-  
+ 
+# require database_cleaner at the top level
+require 'database_cleaner'
+# configure shoulda matchers to use rspec as the test framework 
+# and full matcher libraries for rails
+Shoulda::Matchers.configure do |config|
+
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end  

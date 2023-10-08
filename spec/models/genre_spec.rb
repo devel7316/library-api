@@ -1,15 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Genre, type: :model do
-  #pending "add some examples to (or delete) #{__FILE__}"
-  describe ' Model.Genre' do 
-    let(:genre1){ FactoryBot.create :genre }
-
-    context 'validates field using factoryBot' do 
-      it 'name must be valid' do
-        expect(genre1).to be_valid 
-      end
-      #
-    end
-  end  
+  #'
+  #it { should validate_presence_of(:name) }
+  #
+  it { 
+    should validate_length_of(:name)
+      .is_at_least(3)
+  }  
 end

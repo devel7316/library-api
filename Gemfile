@@ -39,12 +39,20 @@ gem "bootsnap", require: false
 group :development, :test do
   source "https://rubygems.org"
 
-  gem 'byebug', '~> 9.0', '>= 9.0.5'
-  gem "factory_bot_rails"
-  gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'main'
-  #
-  gem 'rails-controller-testing'
-  gem 'rspec-rails'
+  #gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'main'
+  gem "byebug", "~> 11.1"
+  # 
+  #gem 'rspec-rails', '~> 6.0.0'
+  # as described at: https://www.microverse.org/blog/test-driven-development-of-restful-json-api-with-rails
+  gem 'rspec-rails', '~> 4.0', '>= 4.0.2'
+end
+
+# as described at: https://www.microverse.org/blog/test-driven-development-of-restful-json-api-with-rails
+group :test do
+  gem 'database_cleaner'
+  gem 'factory_bot_rails', '~> 6.1'
+  gem 'faker'
+  gem 'shoulda-matchers', '~> 4.5', '>= 4.5.1'
 end
 
 group :development do
