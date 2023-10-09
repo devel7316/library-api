@@ -24,7 +24,8 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   
 end
- 
+#
+# as described at: https://www.microverse.org/blog/test-driven-development-of-restful-json-api-with-rails 
 # require database_cleaner at the top level
 require 'database_cleaner'
 # configure shoulda matchers to use rspec as the test framework 

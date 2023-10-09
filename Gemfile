@@ -39,7 +39,7 @@ gem "bootsnap", require: false
 group :development, :test do
   source "https://rubygems.org"
 
-  #gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'main'
+  gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'main'
   gem "byebug", "~> 11.1"
   # 
   #gem 'rspec-rails', '~> 6.0.0'
@@ -51,7 +51,7 @@ end
 group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails', '~> 6.1'
-  gem 'faker'
+  #gem 'faker'
   gem 'shoulda-matchers', '~> 4.5', '>= 4.5.1'
 end
 

@@ -1,7 +1,16 @@
 namespace :ndev do
+
   desc "Treat resources with same faking data"
   task fake_data_create: :environment do
-    
+
+    puts "faking genre..."
+    10.times do
+      Genre.create!(
+        name: Faker::Book.unique.genre
+      )
+    end
+
+=begin
     puts "faking writer..."
     Faker::Name.unique.clear  
     5.times do
@@ -9,13 +18,7 @@ namespace :ndev do
         name: Faker::Name.unique.name
       )
     end
-    puts "faking genre..."
-    #Faker::Book.unique.clear
-    10.times do
-      Genre.create!(
-        name: Faker::Book.unique.genre
-      )
-    end
+
     puts "faking client..."
     Faker::Name.unique.clear
     20.times do
@@ -47,6 +50,7 @@ namespace :ndev do
         acquisition_date: itAqs 
       )
     end
+=end
     puts "the end."
   end
 
@@ -54,8 +58,8 @@ namespace :ndev do
     puts "Genre clear!"
     #    
     Genre.destroy_all
-    Writer.destroy_all
-    Client.destroy_all
+    #Writer.destroy_all
+    #Client.destroy_all
     #
     puts "the end. has to seed it..."
   end

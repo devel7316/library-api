@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :genre do
-    name { "myFoo" }  
+    name { Faker::Book.unqiue.genre }  
   end
 end
