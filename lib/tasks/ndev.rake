@@ -10,7 +10,6 @@ namespace :ndev do
       )
     end
 
-=begin
     puts "faking writer..."
     Faker::Name.unique.clear  
     5.times do
@@ -32,8 +31,7 @@ namespace :ndev do
       )
       #*puts "unique? #{itName} email:[#{itEmail}] cell:[#{itPhone}]"
     end
-    puts "the end."
-    #
+
     puts "faking book..."
     #Faker::Book.unique.clear
     20.times do
@@ -44,22 +42,24 @@ namespace :ndev do
       itAqs = Faker::Date.between(from: 50.years.ago, to: 2.months.ago)
       Book.create!(
         title:  itTitle,
-        id_genre: itGenre,
-        id_writer: itWriter,
+        genre_id: itGenre,
+        writer_id: itWriter,
         quantity: itQtt,
         acquisition_date: itAqs 
       )
     end
+=begin
 =end
     puts "the end."
   end
 
   task fake_data_clear: :environment do 
-    puts "Genre clear!"
+    puts "data cleanse!"
     #    
     Genre.destroy_all
-    #Writer.destroy_all
-    #Client.destroy_all
+    Writer.destroy_all
+    Client.destroy_all
+    Book.destroy_all
     #
     puts "the end. has to seed it..."
   end

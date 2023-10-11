@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :books
+  resources :clients
+  resources :writers
   #   
   resources :genres
   #get 'genres', to: 'genres#show'

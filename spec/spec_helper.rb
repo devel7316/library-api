@@ -17,6 +17,11 @@ RSpec.configure do |config|
   #
   # start the transaction strategy as examples are run
   config.around(:each) do |example|
-    DatabaseCleaner.cleaning do example.run end 
+    DatabaseCleaner.cleaning do 
+      example.run 
+    end 
   end
+
+  #config.include RequestSpecHelper, type: :request
+  
 end
