@@ -36,16 +36,30 @@ namespace :ndev do
     #Faker::Book.unique.clear
     20.times do
       itTitle = Faker::Book.unique.title 
-      itGenre = Faker::Number.number(digits: 9)
-      itWriter = Faker::Number.number(digits: 9)
       itQtt = Faker::Number.number(digits: 2)
       itAqs = Faker::Date.between(from: 50.years.ago, to: 2.months.ago)
+      #
       Book.create!(
         title:  itTitle,
-        genre_id: itGenre,
-        writer_id: itWriter,
+        genre: Genre.all.sample,
+        writer: Writer.all.sample,
         quantity: itQtt,
         acquisition_date: itAqs 
+      )
+    end
+    
+    puts "faking shelves..."
+    20.times do 
+      itStart = Faker::Date.between(from: 2.months.ago, to: 1.day.ago)
+      #
+      Shelf.create!(
+        book: Book.all.sample,
+        client: Client.all.sample,
+        quantity: 1,
+        start_date: itStart,
+        end_date: '2023/09/01',
+        devolution_date: '2023/09/01',
+        status_id: 0
       )
     end
 =begin
@@ -60,6 +74,7 @@ namespace :ndev do
     Writer.destroy_all
     Client.destroy_all
     Book.destroy_all
+    Shelf.destroy_all
     #
     puts "the end. has to seed it..."
   end
