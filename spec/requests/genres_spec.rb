@@ -36,7 +36,10 @@ RSpec.describe "/genres", type: :request do
   # GenresController, or in your router and rack
   # middleware. Be sure to keep this updated too.
   let(:valid_headers) {
-    {}
+    {
+      Content-Type: 'application/json',
+      Accept: 'application/json'
+    }
   }
 
   describe "GET /index" do
@@ -87,7 +90,6 @@ RSpec.describe "/genres", type: :request do
       end
 
       it "renders a JSON response with errors for the new genre" do
-        #puts genre_url  
         post genres_url,
              params: { genre: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
@@ -107,7 +109,6 @@ RSpec.describe "/genres", type: :request do
         patch genre_url(genre),
               params: { genre: new_attributes }, headers: valid_headers, as: :json
         genre.reload
-        #skip("Add assertions for updated state")
       end
 
       it "renders a JSON response with the genre" do
