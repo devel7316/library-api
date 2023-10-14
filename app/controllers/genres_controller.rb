@@ -3,13 +3,20 @@ class GenresController < ApplicationController
 
   # GET /genres
   def index
-    @genres = Genre.all
+    local = ""
+    if (params[:genre].to_s == "\{\}")
+      local = "count[#{Genre.count}]"
+    else 
+      local = "data[#{params[:genre]}]"
+    end
 
-    render json: @genres
-  end
+    local = "{'genres/': '#{local}'}"  
+    render json: local
+end
 
   # GET /genres/1
   def show
+    puts "SHOW"
     render json: @genre
   end
 

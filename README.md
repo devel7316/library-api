@@ -19,7 +19,10 @@ Things you may want to cover:
 # Entity Genre
 
 # /genres GET (list_all)
-curl -X GET http://localhost:3000/genres -H 'Content-Type: application/json' 
+curl -X GET http://localhost:3000/genres -H 'Content-Type: application/json; Accept: application/json;'
+
+# /genres GET (by name)
+curl -X GET http://localhost:3000/genres -H 'Content-Type: application/json; Accept: application/json;' -d '{"name":"Mystery-1"}'
 
 # /genres POST (create)
 curl -X POST http://localhost:3000/genres -H 'Content-Type: application/json' -d '{"name":"my_data"}'

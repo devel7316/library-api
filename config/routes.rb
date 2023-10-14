@@ -3,6 +3,10 @@ Rails.application.routes.draw do
   resources :books
   resources :clients
   resources :writers
+  get 'writers', to: 'writers#show'
+  patch 'writers', to: 'writers#update'
+  delete 'writers', to: 'writers#destroy'
+  #
   #   
   resources :genres
   get 'genres', to: 'genres#show'

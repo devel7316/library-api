@@ -16,9 +16,7 @@ RSpec.describe "/genres", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Genre. As you add validations to Genre, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributesA) {
-    skip("Add a hash of attributes valid for your model")
-  }
+
   let(:valid_attributes) {
     { name: 'HardMockedValue01' }
   }
@@ -37,19 +35,15 @@ RSpec.describe "/genres", type: :request do
   # middleware. Be sure to keep this updated too.
   let(:valid_headers) {
     {
-      Content-Type: 'application/json',
-      Accept: 'application/json'
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
     }
   }
 
   describe "GET /index" do
     it "renders a successful response" do
+      #
       #Genre.create! valid_attributes
-      #Genre.create! {{ name: "HardMocked01" }}
-      #Genre.create!( { name: "HardMocked01" })
-      #Genre.create!( { name: "" })
-      Genre.create! valid_attributes
-
       get genres_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
