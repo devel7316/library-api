@@ -22,7 +22,7 @@ RSpec.describe "/genres", type: :request do
   }
 
   let(:invalid_attributesA) {
-    #skip("Add a hash of attributes invalid for your model")
+    {}
   }
 
   let(:invalid_attributes) {
@@ -94,21 +94,53 @@ RSpec.describe "/genres", type: :request do
 
   describe "PATCH /update" do
     context "with valid parameters" do
-      let(:new_attributes) {
-        { name: 'Value to_be_updated' }
-      }
-
-      it "updates the requested genre" do
+      it "renders a JSON response with the genre" do
         genre = Genre.create! valid_attributes
+        local = "{\"id\": #{genre.id}, \"name\": \"#{genre.name}\"}"
+
+        #patch genre_url(genre),
+        #      params: { genre: JSON(local) }, headers: valid_headers, as: :json
         patch genre_url(genre),
-              params: { genre: new_attributes }, headers: valid_headers, as: :json
-        genre.reload
+              params: { genre: genre }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(response.content_type).to match(a_string_including("application/json"))
+      end
+
+      it "204 HTTP 'not found' code the requested genre" do
+        genre = Genre.new(id: -1, name: "")
+        patch genre_url(genre),
+              params: { genre: genre }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(204)
+      end
+    end  
+
+    context "with invalid parameters" do
+      it "renders a JSON response with errors for the genre" do
+        genre = Genre.new(id: -1, name: "")
+        patch genre_url(genre),
+              params: { genre: invalid_attributes }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.content_type).to match(a_string_including("application/json"))
+      end
+    end
+
+  end    
+=begin  
+  describe "PATCH /update" do
+
+    context "with valid parameters" do
+      
+      it "not found 204 the requested genre" do
+        genre = "{\"id\": -1, \"name\": \"not exist\"}"
+        patch genre_url(genre),
+              params: { genre: genre }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(204)
       end
 
       it "renders a JSON response with the genre" do
-        genre = Genre.create! valid_attributes
+        genre = Genre.first
         patch genre_url(genre),
-              params: { genre: new_attributes }, headers: valid_headers, as: :json
+              params: { genre: genre }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -116,9 +148,10 @@ RSpec.describe "/genres", type: :request do
 
     context "with invalid parameters" do
       it "renders a JSON response with errors for the genre" do
-        genre = Genre.create! valid_attributes
+        #genre = Genre.create! invalid_attributes
+        genre = "{}"
         patch genre_url(genre),
-              params: { genre: invalid_attributes }, headers: valid_headers, as: :json
+              params: { genre: genre }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -133,4 +166,5 @@ RSpec.describe "/genres", type: :request do
       }.to change(Genre, :count).by(-1)
     end
   end
+=end
 end

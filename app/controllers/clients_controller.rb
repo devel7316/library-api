@@ -3,9 +3,24 @@ class ClientsController < ApplicationController
 
   # GET /clients
   def index
-    @clients = Client.all
+    local = params[:client].to_s
+    if (local == "{}") or (local == "")
+      #local = "\"id\": 0, \"name\": \"count:#{Genre.count}\""
+      local = Client.all
 
+    else 
+      item = Client.find_by("name == ?", params[:client][:name])
+      if (item == nil) 
+        local = "{\"id\": 0, \"name\": \"not found\"}" 
+      else 
+        local = "{\"id\": #{item.id}, \"name\": \"#{item.name}\"}"
+      end
+    end
+    render json: local
+=begin
+    @clients = Client.all
     render json: @clients
+=end    
   end
 
   # GET /clients/1

@@ -3,21 +3,31 @@ class GenresController < ApplicationController
 
   # GET /genres
   def index
-    local = ""
-    if (params[:genre].to_s == "\{\}")
-      local = "count[#{Genre.count}]"
-    else 
-      local = "data[#{params[:genre]}]"
-    end
+    local = params[:genre].to_s
+    if (local == "{}") or (local == "")
+      #local = "\"id\": 0, \"name\": \"count:#{Genre.count}\""
+      local = Genre.all
 
-    local = "{'genres/': '#{local}'}"  
+    else 
+      item = Genre.find_by("name == ?", params[:genre][:name])
+      if (item == nil) 
+        local = "{\"id\": 0, \"name\": \"not found\"}" 
+      else 
+        local = "{\"id\": #{item.id}, \"name\": \"#{item.name}\"}"
+      end
+    end
     render json: local
-end
+=begin    
+    @genres = Genre.all
+    render json: @genres
+=end    
+  end
 
   # GET /genres/1
   def show
-    puts "SHOW"
-    render json: @genre
+    #puts "SHOW"
+    #render json: @genres
+    render json: "{\"id\": 0, \"name\": \"not implemented\"}" 
   end
 
   # POST /genres
@@ -33,22 +43,61 @@ end
 
   # PATCH/PUT /genres/1
   def update
-    if @genre.update(genre_params)
-      render json: @genre
-    else
-      render json: @genre.errors, status: :unprocessable_entity
+=begin    
+    id = params[:genre][:id]
+    if (id == nil) 
+      render json: {}, status: :unprocessable_entity
+    else   
+
+      if (Genre.find_by("id == ?", params[:genre][:id]) == nil)
+        render json: "{\"id\": 0, \"name\": \"not found\"}", :status => '404'
+
+      else     
+        if @genre.update(genre_params)
+          render json: @genre
+
+        else
+          render json: @genre.errors, status: :unprocessable_entity
+        end
+      end
+    end  
+=end    
+    #if (Genre.find_by("id == ?", params[:genre][:id]) == nil)
+    #
+    #puts "id:[#{params[:genre][:id]}]"
+    if (params[:genre][:id] == nil)
+      render json: "", status: :unprocessable_entity
+    
+    else 
+      if (@genre == nil)
+        render :status => '204'
+      
+      else 
+        if @genre.update(genre_params)
+          render json: @genre
+        else
+          render json: @genre.errors, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   # DELETE /genres/1
   def destroy
-    @genre.destroy
+    if (@genre == nil) 
+      render json: "{\"id\": 0, \"name\": \"not found\"}" 
+
+    else     
+      @genre.destroy
+    end 
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_genre
-      @genre = Genre.find(params[:id])
+      #@genre = Genre.find(params[:id])
+      #puts "id:[#{params[:genre][:id]}]"
+      @genre = Genre.find_by("id == ?", params[:genre][:id])
     end
 
     # Only allow a list of trusted parameters through.

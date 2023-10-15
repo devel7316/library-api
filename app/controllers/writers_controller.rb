@@ -3,10 +3,25 @@ class WritersController < ApplicationController
 
   # GET /writers
   def index
-    @writers = Writer.all
+    local = params[:writer].to_s
+    if (local == "{}") or (local == "")
+      #local = "\"id\": 0, \"name\": \"count:#{Genre.count}\""
+      local = Writer.all
 
+    else 
+      item = Writer.find_by("name == ?", params[:writer][:name])
+      if (item == nil) 
+        local = "{\"id\": 0, \"name\": \"not found\"}" 
+      else 
+        local = "{\"id\": #{item.id}, \"name\": \"#{item.name}\"}"
+      end
+    end
+    render json: local
+=begin
+    @writers = Writer.all
     render json: @writers
-  end
+=end
+end
 
   # GET /writers/1
   def show
