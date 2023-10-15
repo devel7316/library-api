@@ -96,17 +96,14 @@ RSpec.describe "/genres", type: :request do
     context "with valid parameters" do
       it "renders a JSON response with the genre" do
         genre = Genre.create! valid_attributes
-        local = "{\"id\": #{genre.id}, \"name\": \"#{genre.name}\"}"
-
-        #patch genre_url(genre),
-        #      params: { genre: JSON(local) }, headers: valid_headers, as: :json
         patch genre_url(genre),
               params: { genre: genre }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
 
-      it "204 HTTP 'not found' code the requested genre" do
+      it "204 HTTP 'not found' code to the requested genre" do
+        puts "UPDATE 204"
         genre = Genre.new(id: -1, name: "")
         patch genre_url(genre),
               params: { genre: genre }, headers: valid_headers, as: :json
@@ -116,6 +113,7 @@ RSpec.describe "/genres", type: :request do
 
     context "with invalid parameters" do
       it "renders a JSON response with errors for the genre" do
+        puts "UPDATE invalid"
         genre = Genre.new(id: -1, name: "")
         patch genre_url(genre),
               params: { genre: invalid_attributes }, headers: valid_headers, as: :json
@@ -123,7 +121,6 @@ RSpec.describe "/genres", type: :request do
         expect(response.content_type).to match(a_string_including("application/json"))
       end
     end
-
   end    
 =begin  
   describe "PATCH /update" do
@@ -157,14 +154,45 @@ RSpec.describe "/genres", type: :request do
       end
     end
   end
+=end
 
   describe "DELETE /destroy" do
+    it "HTTP 204 'not found' code to the requested genre" do
+      # it is just a record (not added into db)
+      genre = Genre.new(id: -1, name: "")
+      delete genre_url(genre), 
+        params: { genre: genre }, headers: valid_headers, as: :json
+      expect(response).to have_http_status(204)
+    end
+
+    let(:valid_unique) {
+      x = rand(999999999) 
+      { name: "must be unique at this point #{x}" }
+    }
     it "destroys the requested genre" do
-      genre = Genre.create! valid_attributes
+      #genre = Genre.create! valid_attributes
+      #genre = Genre.new(id: -1,  name: "must be unique at this point")
+      genre = Genre.create! valid_unique
+      #genre = Genre.new(id: -1, name: "")
+      puts "RSPEC [#{genre.as_json}]"
+      #genre = Genre.new(name: "abcdefghijklmwn")
+      #expect {
+      #  delete genre_url(genre), headers: valid_headers, as: :json
+      #}.to change(Genre, :count).by(-1)
+      #}.to change(Genre, :count).by(0) 
+      #
+      #delete genre_url(valid_unique), headers: valid_headers, as: :json
+      #expect(response).to have_http_status(:ok)
+
+      #delete genre_url(genre), params: { genre: genre }, 
+      #  headers: valid_headers, as: :json
+      #expect(response).to have_http_status(:ok)
+
       expect {
-        delete genre_url(genre), headers: valid_headers, as: :json
+        delete genre_url(genre), params: { genre: genre }, 
+          headers: valid_headers, as: :json
       }.to change(Genre, :count).by(-1)
+
     end
   end
-=end
 end

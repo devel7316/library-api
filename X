@@ -1,0 +1,15 @@
+HTTP/1.1 422 Unprocessable Entity
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 0
+X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
+Content-Type: application/json; charset=utf-8
+Vary: Accept
+Cache-Control: no-cache
+X-Request-Id: 854653f5-7961-44a6-a2fd-865bfd449c8f
+X-Runtime: 0.290355
+Server-Timing: start_processing.action_controller;dur=0.23, unpermitted_parameters.action_controller;dur=0.16, sql.active_record;dur=3.47, process_action.action_controller;dur=279.21
+Transfer-Encoding: chunked
+
