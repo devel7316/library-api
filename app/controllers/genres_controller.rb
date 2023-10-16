@@ -84,7 +84,7 @@ class GenresController < ApplicationController
 
   # DELETE /genres/1
   def destroy
-    puts "CTRL [#{params[:genre]}]"
+    #puts "DELETE [#{params[:genre]}]"
     if (@genre == nil) 
       render :status => '204'
 
@@ -92,21 +92,6 @@ class GenresController < ApplicationController
       @genre.destroy
       render status: :ok
     end 
-=begin    
-  local = Genre.find_by("id == ?", params[:genre][:id])  
-    puts "CTRL [#{params[:genre]}] [#{local}]"
-    if (local == nil) 
-      #render json: "{\"id\": 0, \"name\": \"not found\"}" 
-      #render json: "{\"info\":\"not found\"}" :status => '204'
-      puts "CTRL nil"
-      render :status => '204'
-
-    else     
-      #Genre.where(id: local.id).destroy
-      puts "CTRL delete"
-      local.destroy
-    end 
-=end    
   end
 
   private

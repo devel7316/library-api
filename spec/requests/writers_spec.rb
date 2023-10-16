@@ -33,6 +33,7 @@ RSpec.describe "/writers", type: :request do
   }
 
   describe "GET /index" do
+    #puts "[] without params"
     it "renders a successful response" do
       Writer.create! valid_attributes
       get writers_url, headers: valid_headers, as: :json
@@ -42,6 +43,7 @@ RSpec.describe "/writers", type: :request do
 
   describe "GET /show" do
     it "renders a successful response" do
+      #puts "\n[Writer.create! valid_attributes]"
       writer = Writer.create! valid_attributes
       get writer_url(writer), as: :json
       expect(response).to be_successful

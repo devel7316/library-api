@@ -15,7 +15,10 @@ Rails.application.routes.draw do
   delete 'genres', to: 'genres#destroy'
   #   
   resources :writers
-  get 'writers', to: 'writers#show'
+  get 'writers', to: 'writers#index'
+  get 'writers/1', to: 'writers#show'
+  #get 'writers/:id', to: 'writers#show'
+  #get 'writers/:name', to: 'writers#show'
   patch 'writers', to: 'writers#update'
   delete 'writers', to: 'writers#destroy'
   #

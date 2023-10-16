@@ -38,6 +38,7 @@ curl -X PUT http://localhost:3000/genres -H 'Content-Type: application/json; Acc
 curl -X DELETE http://localhost:3000/genres -H 'Content-Type: application/json; Accept: application/json;' -d '{"id":131}'
 #
 # Entity Writer
+# -------------------------------------------------------------------------
 # 
 # /writers GET #index [] (count)
 curl -X GET http://localhost:3000/writers -H 'Content-Type: application/json; Accept: application/json;'
@@ -47,6 +48,9 @@ curl -X GET http://localhost:3000/writers -H 'Content-Type: application/json; Ac
 
 # /writers POST #create (create)
 curl -X POST http://localhost:3000/writers -H 'Content-Type: application/json' -d '{"name":"my_data"}'
+
+# /genres PATCH #update (update) 
+curl -X PATCH http://localhost:3000/writers -H 'Content-Type: application/json; Accept: application/json;' -d '{"id":-99, "name":"NOT Exists onto db"}'
 
 # /writers DELETE (destroy) 
 curl -X DELETE http://localhost:3000/writers -H 'Content-Type: application/json; Accept: application/json;' -d '{"id":131}'

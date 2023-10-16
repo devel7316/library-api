@@ -3,6 +3,7 @@ class WritersController < ApplicationController
 
   # GET /writers
   def index
+    #puts "INDEX #{params[:writer]}"
     local = params[:writer].to_s
     if (local == "{}") or (local == "")
       #local = "\"id\": 0, \"name\": \"count:#{Genre.count}\""
@@ -25,7 +26,9 @@ end
 
   # GET /writers/1
   def show
-    render json: @writer
+    #puts "SHOW id[#{params[:id]}] @writer[#{@writer.as_json}]"
+    #render json: @writer
+    render json: "{\"id\": 0, \"name\": \"not implemented\"}" 
   end
 
   # POST /writers
@@ -41,30 +44,43 @@ end
 
   # PATCH/PUT /writers/1
   def update
-    if @writer.update(writer_params)
-      render json: @writer
-    else
-      render json: @writer.errors, status: :unprocessable_entity
+    puts "UPDATE id[#{params[:id]}] @writer[#{@writer.as_json}]"  
+    if (@writer == nil)
+      puts "UPDATE id[#{params[:id]}] NOT found"  
+      render json: "{\"id\": 0, \"name\": \"NOT found\"}", :status => '204'
+
+    else 
+      if @writer.update(writer_params)
+        render json: @writer
+      else
+        render json: @writer.errors, status: :unprocessable_entity
+      end
     end
   end
 
   # DELETE /writers/1
   def destroy
-    #@books = Book.find_by_writer_id(@writer.id)
-    #@books.each do |book|
-    #  book.destroy
-    #end
-    @writer.destroy
+    #puts "CTRL [#{params[:genre]}]"
+    if (@writer == nil) 
+      render :status => '204'
+
+    else     
+      @writer.destroy
+      render status: :ok
+    end 
+    #@writer.destroy
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_writer
-      @writer = Writer.find(params[:id])
+      #@writer = Writer.find(params[:id])
+      @writer = Writer.find_by("id == ?", params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def writer_params
-      params.require(:writer).permit(:name)
+      #params.require(:writer).permit(:name)
+      params.require(:writer).permit(:id, :name)
     end
 end
