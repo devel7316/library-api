@@ -17,13 +17,40 @@ RSpec.describe "/books", type: :request do
   # Book. As you add validations to Book, be sure to
   # adjust the attributes here as well.
 
-  let(:valid_json) {
+  let(:valid_attr_0) {
+    x = rand(9999999)
     { 
-      title: 'Hard_Mocking_Title_01',
-      writer: build(:writer),
-      genre: build(:genre),
+      title: "Mocking_Title_#{x}",
+      writer: create(:writer),
+      genre: create(:genre),
+      quantity: 9,
+      acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
+    }
+  }
+
+  let(:valid_attr_id) {
+    x = rand(9999999)
+    writer = create(:writer)
+    genre = create(:genre)
+    { 
+      title: "Mocking_Title_#{x}",
+      writer_id: writer[:id], #121, #Writer.all.sample.id,
+      genre_id: genre[:id], #67, #Genre.all.sample.id,
+      quantity: 9,
+      acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
+    }
+  }
+
+  let(:valid_json) {
+    x = rand(999999)
+    { 
+      title: "Mocking_Title_#{x}",
+      #writer: build(:writer),
+      #genre: build(:genre),
+      writer: Writer.all.sample,
+      genre: Genre.all.sample,
       quantity: 1,
-      acquisition_date: '2022-12-02'
+      acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
     }
   }
 
@@ -41,7 +68,7 @@ RSpec.describe "/books", type: :request do
 
   describe "model tests..." do
     it "testing: model, attributes  & FactoryBot(build/create)" do
-      attr_book = Book.create! valid_json
+      attr_book = Book.create! valid_attr_id
       expect(attr_book).to be_a(Book)
       #
       build_book = build(:book)
@@ -55,7 +82,6 @@ RSpec.describe "/books", type: :request do
   
   describe "GET /index" do
     it "renders a successful response" do
-      book = build(:book)
       get books_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
@@ -63,7 +89,7 @@ RSpec.describe "/books", type: :request do
 
   describe "GET /show" do
     it "renders a successful response" do
-      book = Book.create! valid_json
+      book = Book.create! valid_attr_0
       get book_url(book), as: :json
       expect(response).to be_successful
     end
@@ -71,20 +97,19 @@ RSpec.describe "/books", type: :request do
 
   describe "POST /create" do
     context "with valid parameters" do
+
       it "creates a new Book" do
-        book = create(:book)
         expect {
           post books_url,
-               #params: { book: valid_attributes }, headers: valid_headers, as: :json
-               #params: { book: valid_json }, headers: valid_headers, as: :json
-               params: { book: book }, headers: valid_headers, as: :json
+               params: { book: valid_attr_id }, 
+               headers: valid_headers, as: :json
         }.to change(Book, :count).by(1)
       end
 
       it "renders a JSON response with the new book" do
-        book = create(:book)
         post books_url,
-             params: { book: book }, headers: valid_headers, as: :json
+             params: { book: valid_attr_id }, 
+             headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -100,7 +125,8 @@ RSpec.describe "/books", type: :request do
 
       it "renders a JSON response with errors for the new book" do
         post books_url,
-             params: { book: invalid_attributes }, headers: valid_headers, as: :json
+             params: { book: invalid_attributes }, 
+             headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -109,19 +135,35 @@ RSpec.describe "/books", type: :request do
 
   describe "PATCH /update" do
     context "with valid parameters" do
+      let(:sample_update) {
+        #book = Book.all.sample
+        book = create(:book)
+        #puts "rspec 0 [#{book[:title]}]"
+        {
+          id: book[:id],
+          title: book[:title],
+          writer_id: book[:writer_id],
+          genre_id: book[:genre_id],
+          quantity: book[:quantity]+1,
+          acquisition_date: book[:acquisition_date]
+        }
+      }
       it "updates the requested book" do
-        book = Book.create! valid_json
-        patch book_url(book),
-              params: { book: invalid_attributes }, headers: valid_headers, as: :json
-        book.reload
-      end
-
-      it "renders a JSON response with the book" do
-        book = Book.create! valid_json
-        patch book_url(book),
-              params: { book: valid_json }, headers: valid_headers, as: :json
+        #book = create(:book)
+        book = Book.create! valid_attr_id
+        puts "rspec update [#{book.as_json}]"
+        patch book_url(book: book),
+              params: { book: book }, headers: valid_headers, as: :json
+        #book.reload
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including("application/json"))
+      end
+
+      it "204 HTTP 'NOT found' code to the requested book" do
+        book = Book.new(id: -1, title: "")
+        patch genre_url(book),
+              params: { book: book }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(204)
       end
     end
 

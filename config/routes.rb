@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
   resources :shelves
-  resources :books
-  resources :clients
   #resources :writers
   
   #patch 'writers', to: 'writers#update'
@@ -22,6 +20,13 @@ Rails.application.routes.draw do
   patch 'writers', to: 'writers#update'
   delete 'writers', to: 'writers#destroy'
   #
+  resources :clients
+  patch 'clients', to: 'clients#update'
+  delete 'clients', to: 'clients#destroy'
+  #
+  resources :books
+  get 'books/1', to: 'books#show'
+  patch 'books', to: 'books#update'
   #
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -44,9 +44,9 @@ end
 
   # PATCH/PUT /writers/1
   def update
-    puts "UPDATE id[#{params[:id]}] @writer[#{@writer.as_json}]"  
+    #puts "UPDATE id[#{params[:id]}] @writer[#{@writer.as_json}]"  
     if (@writer == nil)
-      puts "UPDATE id[#{params[:id]}] NOT found"  
+      #puts "UPDATE id[#{params[:id]}] NOT found"  
       render json: "{\"id\": 0, \"name\": \"NOT found\"}", :status => '204'
 
     else 

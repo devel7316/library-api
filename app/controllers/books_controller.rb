@@ -3,9 +3,24 @@ class BooksController < ApplicationController
 
   # GET /books
   def index
-    @books = Book.all
 
+    local = params[:book].to_s
+    if (local == "{}") or (local == "")
+      local = Book.all
+
+    else 
+      @book = Book.find_by("title == ?", params[:title])  
+      if (@book == nil) 
+        local = "{\"id\": 0, \"title\": \"not found\"}" 
+      else 
+        local = "{\"id\": #{@book.id}, \"name\": \"#{@book.title}\"}"
+      end
+    end
+    render json: local
+=begin    
+    @books = Book.all
     render json: @books
+=end
   end
 
   # GET /books/1
@@ -16,7 +31,7 @@ class BooksController < ApplicationController
   # POST /books
   def create
     @book = Book.new(book_params)
-
+    #puts "\nCREATE [#{book_params.to_s}]"
     if @book.save
       render json: @book, status: :created, location: @book
     else
@@ -41,7 +56,8 @@ class BooksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book
-      @book = Book.find(params[:id])
+      #@book = Book.find(params[:id])
+      @book = Book.find_by("id == ?", params[:id])
     end
 
     # Only allow a list of trusted parameters through.
