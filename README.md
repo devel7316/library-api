@@ -18,6 +18,7 @@ Things you may want to cover:
 * How to run the test suite
 #
 # Entity Genre
+# -------------------------------------------------------------------------
 # 
 # /genres GET #index [] (count)
 curl -X GET http://localhost:3000/genres -H 'Content-Type: application/json; Accept: application/json;'
@@ -110,6 +111,21 @@ curl -X DELETE http://localhost:3000/books -H 'Content-Type: application/json; A
 # /books DELETE (destroy) 
 # --- provide a valid id so as to return OK
 curl -X DELETE http://localhost:3000/books -H 'Content-Type: application/json; Accept: application/json;' -d '{"id":21}'
+#
+# Entity Shelf
+# -------------------------------------------------------------------------
+# 
+# /shelves GET #index [] 
+curl -X GET http://localhost:3000/shelves -H 'Content-Type: application/json; Accept: application/json;'
+
+# /shelves GET #show 
+# --- NOT found (not valid id)
+curl -X GET http://localhost:3000/shelves/-666 -H 'Content-Type: application/json; Accept: application/json;'
+
+# /shelves GET #show 
+# --- provide a valid id so as to return OK
+curl -X GET http://localhost:3000/shelves/XXX -H 'Content-Type: application/json; Accept: application/json;'
+
 
 # -------------------------------------------------------------------------
 * Services (job queues, cache servers, search engines, etc.)

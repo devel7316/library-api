@@ -62,23 +62,13 @@ class ShelvesController < ApplicationController
 
       @error = :unprocessable_entity 
       begin
-        if (params[:action] == "show") 
-          bad = (params[:id] == nil)
-          #puts "\nshow//:[#{params.to_s}]"
-  
-        else 
-          bad = (params[:shelf][:id] == nil) 
-        end       
-        #if (params[:action] == "update") 
-        #  puts "\nCTRL update/ id:[#{params[:shelf][:id]}]\nid:[#{params[:id]}]\n#{params.to_s}\n"
-        #end
-
-        if (bad)
+        id = (params[:action] == "show")  ? params[:id] : params[:shelf][:id]
+        if (id == nil)
           raise "This is an exception 'id' must be provided."
 
-        else 
+        else
           @error = :no_content
-          @shelf = Shelf.find(params[:shelf][:id]) 
+          @shelf = Shelf.find(id) 
           @error = :ok
         end
 
