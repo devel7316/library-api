@@ -25,8 +25,9 @@ Rails.application.routes.draw do
   delete 'clients', to: 'clients#destroy'
   #
   resources :books
-  get 'books/1', to: 'books#show'
+  get 'books', to: 'books#show'
   patch 'books', to: 'books#update'
+  delete 'books', to: 'books#destroy'
   #
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

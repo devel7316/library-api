@@ -17,6 +17,7 @@ RSpec.describe "/books", type: :request do
   # Book. As you add validations to Book, be sure to
   # adjust the attributes here as well.
 
+=begin
   let(:valid_attr_0) {
     x = rand(9999999)
     { 
@@ -27,6 +28,7 @@ RSpec.describe "/books", type: :request do
       acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
     }
   }
+=end
 
   let(:valid_attr_id) {
     x = rand(9999999)
@@ -41,6 +43,7 @@ RSpec.describe "/books", type: :request do
     }
   }
 
+=begin
   let(:valid_json) {
     x = rand(999999)
     { 
@@ -53,6 +56,7 @@ RSpec.describe "/books", type: :request do
       acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
     }
   }
+=end
 
   let(:invalid_attributes) {
     { title: '' }
@@ -89,10 +93,17 @@ RSpec.describe "/books", type: :request do
 
   describe "GET /show" do
     it "renders a successful response" do
-      book = Book.create! valid_attr_0
+      book = Book.create! valid_attr_id
       get book_url(book), as: :json
-      expect(response).to be_successful
+      expect(response).to have_http_status(:ok)
     end
+    it "with 204 HTTP 'NOT found' code for the book" do
+      # an not possible id to the db
+      my_url = book_url("-99")
+      get my_url, headers: valid_headers, as: :json
+      expect(response).to have_http_status(:no_content)
+    end
+
   end
 
   describe "POST /create" do
@@ -135,33 +146,20 @@ RSpec.describe "/books", type: :request do
 
   describe "PATCH /update" do
     context "with valid parameters" do
-      let(:sample_update) {
-        #book = Book.all.sample
-        book = create(:book)
-        #puts "rspec 0 [#{book[:title]}]"
-        {
-          id: book[:id],
-          title: book[:title],
-          writer_id: book[:writer_id],
-          genre_id: book[:genre_id],
-          quantity: book[:quantity]+1,
-          acquisition_date: book[:acquisition_date]
-        }
-      }
       it "updates the requested book" do
-        #book = create(:book)
         book = Book.create! valid_attr_id
-        puts "rspec update [#{book.as_json}]"
-        patch book_url(book: book),
-              params: { book: book }, headers: valid_headers, as: :json
-        #book.reload
+        patch book_url(book),
+              params: { book: book }, 
+              headers: valid_headers, as: :json
+        book.reload
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
 
-      it "204 HTTP 'NOT found' code to the requested book" do
-        book = Book.new(id: -1, title: "")
-        patch genre_url(book),
+      it "with 204 HTTP 'NOT found' code for the book" do
+        # an id not possible to the db
+        book = Book.new(id: -1, title: nil)
+        patch book_url(book),
               params: { book: book }, headers: valid_headers, as: :json
         expect(response).to have_http_status(204)
       end
@@ -169,9 +167,11 @@ RSpec.describe "/books", type: :request do
 
     context "with invalid parameters" do
       it "renders a JSON response with errors for the book" do
-        book = Book.create! valid_json
+        # an id not possible to the db
+        book = Book.new(id: -1, title: nil)
         patch book_url(book),
-              params: { book: invalid_attributes }, headers: valid_headers, as: :json
+              params: { book: invalid_attributes }, 
+              headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -180,10 +180,20 @@ RSpec.describe "/books", type: :request do
 
   describe "DELETE /destroy" do
     it "destroys the requested book" do
-      book = Book.create! valid_json
+      book = Book.create! valid_attr_id
       expect {
-        delete book_url(book), headers: valid_headers, as: :json
+        delete book_url(book), 
+            params: { book: book }, 
+            headers: valid_headers, as: :json
       }.to change(Book, :count).by(-1)
+    end
+
+    it "HTTP 204 'NOT found' code to the requested book" do
+      # an id not possible to the db
+      book = Book.new(id: -1, title: nil)
+      delete book_url(book), 
+        params: { book: book }, headers: valid_headers, as: :json
+      expect(response).to have_http_status(204)
     end
   end
 end

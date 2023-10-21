@@ -124,14 +124,6 @@ RSpec.describe "/genres", type: :request do
   end    
 
   describe "DELETE /destroy" do
-    it "HTTP 204 'not found' code to the requested genre" do
-      # it is just a record (not added into db table)
-      genre = Genre.new(id: -1, name: "")
-      delete genre_url(genre), 
-        params: { genre: genre }, headers: valid_headers, as: :json
-      expect(response).to have_http_status(204)
-    end
-
     let(:valid_unique) {
       x = rand(999999) 
       { name: "must be unique at this point #{x}" }
@@ -143,7 +135,15 @@ RSpec.describe "/genres", type: :request do
         delete genre_url(genre), params: { genre: genre }, 
           headers: valid_headers, as: :json
       }.to change(Genre, :count).by(-1)
-
     end
+
+    it "HTTP 204 'not found' code to the requested genre" do
+      # it is just a record (not added into db table)
+      genre = Genre.new(id: -1, name: "")
+      delete genre_url(genre), 
+        params: { genre: genre }, headers: valid_headers, as: :json
+      expect(response).to have_http_status(204)
+    end
+
   end
 end
