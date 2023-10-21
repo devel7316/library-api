@@ -17,19 +17,6 @@ RSpec.describe "/books", type: :request do
   # Book. As you add validations to Book, be sure to
   # adjust the attributes here as well.
 
-=begin
-  let(:valid_attr_0) {
-    x = rand(9999999)
-    { 
-      title: "Mocking_Title_#{x}",
-      writer: create(:writer),
-      genre: create(:genre),
-      quantity: 9,
-      acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
-    }
-  }
-=end
-
   let(:valid_attr_id) {
     x = rand(9999999)
     writer = create(:writer)
@@ -42,21 +29,6 @@ RSpec.describe "/books", type: :request do
       acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
     }
   }
-
-=begin
-  let(:valid_json) {
-    x = rand(999999)
-    { 
-      title: "Mocking_Title_#{x}",
-      #writer: build(:writer),
-      #genre: build(:genre),
-      writer: Writer.all.sample,
-      genre: Genre.all.sample,
-      quantity: 1,
-      acquisition_date: Faker::Date.between(from: 2.years.ago, to: 2.weeks.ago)
-    }
-  }
-=end
 
   let(:invalid_attributes) {
     { title: '' }
@@ -103,7 +75,6 @@ RSpec.describe "/books", type: :request do
       get my_url, headers: valid_headers, as: :json
       expect(response).to have_http_status(:no_content)
     end
-
   end
 
   describe "POST /create" do
@@ -148,6 +119,8 @@ RSpec.describe "/books", type: :request do
     context "with valid parameters" do
       it "updates the requested book" do
         book = Book.create! valid_attr_id
+        #my_url = books_url(book)
+        #puts "\nRSPEC url:[#{my_url}]"
         patch book_url(book),
               params: { book: book }, 
               headers: valid_headers, as: :json

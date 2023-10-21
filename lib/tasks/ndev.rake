@@ -51,14 +51,15 @@ namespace :ndev do
     puts "faking shelves..."
     20.times do 
       itStart = Faker::Date.between(from: 2.months.ago, to: 1.day.ago)
+      itEnd = Faker::Date.between(from: 2.days.ago, to: Time.now)
       #
       Shelf.create!(
         book: Book.all.sample,
         client: Client.all.sample,
         quantity: 1,
         start_date: itStart,
-        end_date: '2023/09/01',
-        devolution_date: '2023/09/01',
+        end_date: itEnd,
+        devolution_date: nil,
         status_id: 0
       )
     end

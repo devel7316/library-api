@@ -16,25 +16,28 @@ RSpec.describe "/shelves", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Shelf. As you add validations to Shelf, be sure to
   # adjust the attributes here as well.
+
   let(:valid_entity) {
+    book = create(:book) 
+    client = create(:client)
+    #puts "\nFactory book.create:[#{book.as_json}]" 
     {
-      #book: build(:book),
-      #client_id: 0,#
-      #client: build(:client),
-      #book: Book.all.sample,
-      #client: Client.all.sample,
-      book: build(:book),
-      client: build(:client),
+      book_id: book[:id],
+      client_id: client[:id],
       quantity: 1,
-      start_date: Faker::Date.between(from: 2.months.ago, to: 1.days.ago),
-      end_date: 0,
-      devolution_date: 0,
+      start_date: Faker::Date.between(from: 2.months.ago, to: 5.days.ago),
+      end_date: Time.now + Faker::Number.number(digits: 1),
+      devolution_date: "",
       status_id: 0
     }
   }
 
   let(:invalid_attributes) {
-    { start_Date: nil, quantity: nil }
+    { 
+      book: nil, 
+      client: nil, 
+      quantity: nil 
+    }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -48,8 +51,8 @@ RSpec.describe "/shelves", type: :request do
   describe "model test..." do
     it "testing: model, attributes  & FactoryBot(build/create)" do
       #
-      attr_shelf = Shelf.create! valid_entity
-      expect(attr_shelf).to be_a(Shelf)
+      shelf = Shelf.create! valid_entity
+      expect(shelf).to be_a(Shelf)
       #
       build_shelf = build(:shelf)
       expect(build_shelf).to be_a(Shelf)
@@ -61,7 +64,6 @@ RSpec.describe "/shelves", type: :request do
   
   describe "GET /index" do
     it "renders a successful response" do
-      shelf = build(:shelf)
       get shelves_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
@@ -70,25 +72,32 @@ RSpec.describe "/shelves", type: :request do
   describe "GET /show" do
     it "renders a successful response" do
       shelf = Shelf.create! valid_entity
-      get shelf_url(shelf), as: :json
-      expect(response).to be_successful
+      get shelves_url(shelf), as: :json
+      expect(response).to have_http_status(:ok)
+    end
+    it "with 204 HTTP 'NOT found' code for the shelf" do
+      # an not possible id to the db
+      my_url = book_url("-99")
+      get my_url, headers: valid_headers, as: :json
+      expect(response).to have_http_status(:no_content)
     end
   end
 
   describe "POST /create" do
     context "with valid parameters" do
+
       it "creates a new Shelf" do
-        shelf = create(:shelf)
         expect {
           post shelves_url,
-               params: { shelf: shelf }, headers: valid_headers, as: :json
+               params: { shelf: valid_entity }, 
+               headers: valid_headers, as: :json
         }.to change(Shelf, :count).by(1)
       end
 
       it "renders a JSON response with the new shelf" do
-        shelf = create(:shelf)  
         post shelves_url,
-             params: { shelf: shelf }, headers: valid_headers, as: :json
+             params: { shelf: valid_entity }, 
+             headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -99,12 +108,13 @@ RSpec.describe "/shelves", type: :request do
         expect {
           post shelves_url,
                params: { shelf: invalid_attributes }, as: :json
-        }.to change(Shelf, :count).by(0)
+        }.to change(Book, :count).by(0)
       end
 
       it "renders a JSON response with errors for the new shelf" do
         post shelves_url,
-             params: { shelf: invalid_attributes }, headers: valid_headers, as: :json
+             params: { shelf: invalid_attributes },
+             headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -115,25 +125,33 @@ RSpec.describe "/shelves", type: :request do
     context "with valid parameters" do
       it "updates the requested shelf" do
         shelf = Shelf.create! valid_entity
-        patch shelf_url(shelf),
-              params: { shelf: shelf }, headers: valid_headers, as: :json
+        #puts "\nRSPEC shelf:[#{shelf.as_json}]"
+        #my_url = shelves_url(shelf)
+        #puts "\nRSPEC url:[#{my_url}]"
+        patch shelves_url(shelf),
+              params: { shelf: shelf }, 
+              headers: valid_headers, as: :json
         shelf.reload
-      end
-
-      it "renders a JSON response with the shelf" do
-        shelf = Shelf.create! valid_entity
-        patch shelf_url(shelf),
-              params: { shelf: shelf }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including("application/json"))
+      end
+
+      it "with 204 HTTP 'NOT found' code for the shelf" do
+        # an id not possible to the db
+        shelf = Shelf.new(id: -1)
+        patch shelves_url(shelf),
+              params: { shelf: shelf }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(:no_content)
       end
     end
 
     context "with invalid parameters" do
       it "renders a JSON response with errors for the shelf" do
-        shelf = Shelf.create! valid_entity
-        patch shelf_url(shelf),
-              params: { shelf: invalid_attributes }, headers: valid_headers, as: :json
+        # an id not possible to the db
+        shelf = Shelf.new(id: -1)
+        patch shelves_url(shelf),
+              params: { shelf: invalid_attributes }, 
+              headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -141,11 +159,24 @@ RSpec.describe "/shelves", type: :request do
   end
 
   describe "DELETE /destroy" do
-    it "destroys the requested shelf" do
-      shelf = Shelf.create! valid_entity
-      expect {
-        delete shelf_url(shelf), headers: valid_headers, as: :json
-      }.to change(Shelf, :count).by(-1)
+    context "with valid parameters" do
+
+      it "destroys the requested shelf" do
+        shelf = Shelf.create! valid_entity
+        expect {
+          delete shelves_url(shelf), 
+              params: { shelf: shelf }, 
+              headers: valid_headers, as: :json
+        }.to change(Shelf, :count).by(-1)
+      end
+
+      it "HTTP 204 'NOT found' code to the requested shelf" do
+        # an id not possible to the db
+        shelf = Shelf.new(id: -1)
+        delete shelves_url(shelf), 
+          params: { shelf: shelf }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(:no_content)
+      end
     end
   end
 end

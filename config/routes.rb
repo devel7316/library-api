@@ -1,10 +1,4 @@
 Rails.application.routes.draw do
-  resources :shelves
-  #resources :writers
-  
-  #patch 'writers', to: 'writers#update'
-  #delete 'writers', to: 'writers#destroy'
-  #
   #   
   resources :genres
   get 'genres', to: 'genres#show'
@@ -29,6 +23,11 @@ Rails.application.routes.draw do
   patch 'books', to: 'books#update'
   delete 'books', to: 'books#destroy'
   #
+  resources :shelves
+  get 'shelves', to: 'shelves#show'
+  patch 'shelves', to: 'shelves#update'
+  delete 'shelves', to: 'shelves#destroy'
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")

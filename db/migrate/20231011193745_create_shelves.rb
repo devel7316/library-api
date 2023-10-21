@@ -12,4 +12,8 @@ class CreateShelves < ActiveRecord::Migration[7.0]
       t.timestamps
     end
   end
+  #
+  def change
+    add_index :book_client_idx,  [book_id, client_id], unique: true
+  end
 end

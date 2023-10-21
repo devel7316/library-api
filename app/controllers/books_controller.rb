@@ -87,7 +87,9 @@ class BooksController < ApplicationController
         else 
           bad = (params[:book][:id] == nil) 
         end       
-        #puts "\naction:[#{params[:action]}] bad:[#{bad}]"
+        #if (params[:action] == "update") 
+        #  puts "\nCTRL update//:[#{params.to_s}]\n"
+        #end
 
         if (bad)
           raise "This is an exception 'id' must be provided."
