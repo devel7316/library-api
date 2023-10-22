@@ -6,7 +6,7 @@ FactoryBot.define do
     quantity { 1 }
     start_date { Time.now - 10.days }
     end_date { Time.now + 10.days }
-    #status_id { Shelf::status_none }
+    status_id { Shelf::status_none }
   end
 end  
 

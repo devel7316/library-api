@@ -3,12 +3,14 @@ class ShelvesController < ApplicationController
 
   # GET /shelves
   def index
+    #puts "\nCTRL /shelves INDEX"
     @shelves = Shelf.all
     render json: @shelves, status: :ok
   end
 
   # GET /shelves/1
   def show
+    #puts "\nCTRL /shelves SHOW"
     # @error must be set in 'set_book'
     if (@error != :ok)  
       render json: @shelf.errors, status: @error
@@ -52,6 +54,7 @@ class ShelvesController < ApplicationController
 
     else 
       @shelf.destroy
+      render status: :ok
     end 
     #@book.destroy
   end

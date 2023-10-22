@@ -16,16 +16,17 @@ RSpec.describe "/clients", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Client. As you add validations to Client, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
+  let(:valid_entity) {
+    name = Faker::Name.unique.name   
     { 
-      name: 'HardMocked_Client_01', 
-      email: 'smoone@unk.now',
-      phone: '(xxx) xxx xxxx-xxxx'
+      name: name, 
+      email: Faker::Internet.email(name: name),
+      phone: Faker::PhoneNumber.unique.cell_phone
     }
   }
 
   let(:invalid_attributes) {
-    { name: '' }
+    { name: nil, email: '' }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -36,34 +37,59 @@ RSpec.describe "/clients", type: :request do
     {}
   }
 
+  describe "model test..." do
+    it "testing: model, attributes  & FactoryBot(build/create)" do
+      #
+      client = Client.create! valid_entity
+      expect(client).to be_a(Client)
+      #
+      build_client = build(:client)
+      expect(build_client).to be_a(Client)
+      #
+      create_client = create(:client)  
+      expect(create_client).to be_a(Client)
+    end
+  end
+
   describe "GET /index" do
     it "renders a successful response" do
-      Client.create! valid_attributes
-      get clients_url, headers: valid_headers, as: :json
+      my_url = clients_url
+      #puts "\nRSPEC obj:[#{my_url}]"
+      get my_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
 
   describe "GET /show" do
     it "renders a successful response" do
-      client = Client.create! valid_attributes
-      get client_url(client), as: :json
-      expect(response).to be_successful
+      client = Client.create! valid_entity
+      get clients_url(client), as: :json
+      expect(response).to have_http_status(:ok)
+    end
+    it "with 204 HTTP 'NOT found' code for the client" do
+      # an not possible id to the db
+      my_url = "#{clients_url}/-666"
+      #puts "\nRSPEC obj:[#{my_url}]"
+      get my_url, headers: valid_headers, as: :json
+      expect(response).to have_http_status(:no_content)
     end
   end
 
   describe "POST /create" do
     context "with valid parameters" do
+
       it "creates a new Client" do
         expect {
           post clients_url,
-               params: { client: valid_attributes }, headers: valid_headers, as: :json
+               params: { client: valid_entity }, 
+               headers: valid_headers, as: :json
         }.to change(Client, :count).by(1)
       end
 
       it "renders a JSON response with the new client" do
         post clients_url,
-             params: { client: valid_attributes }, headers: valid_headers, as: :json
+             params: { client: valid_entity }, 
+             headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -79,7 +105,8 @@ RSpec.describe "/clients", type: :request do
 
       it "renders a JSON response with errors for the new client" do
         post clients_url,
-             params: { client: invalid_attributes }, headers: valid_headers, as: :json
+             params: { client: invalid_attributes },
+             headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -88,28 +115,34 @@ RSpec.describe "/clients", type: :request do
 
   describe "PATCH /update" do
     context "with valid parameters" do
-
       it "updates the requested client" do
-        client = Client.create! valid_attributes
-        patch client_url(client),
-              params: { client: valid_attributes }, headers: valid_headers, as: :json
+        client = Client.create! valid_entity
+        patch clients_url(client),
+              params: { client: client }, 
+              headers: valid_headers, as: :json
         client.reload
-      end
-
-      it "renders a JSON response with the client" do
-        client = Client.create! valid_attributes
-        patch client_url(client),
-              params: { client: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including("application/json"))
+      end
+
+      it "with 204 HTTP 'NOT found' code for the client" do
+        # an id not possible to the db
+        client = Client.new(id: -666)
+        my_url = "#{clients_url}/#{client[:id]}"
+        #puts "\nRSPEC #{my_url}"
+        patch my_url,
+              params: { client: client }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(:no_content)
       end
     end
 
     context "with invalid parameters" do
       it "renders a JSON response with errors for the client" do
-        client = Client.create! valid_attributes
-        patch client_url(client),
-              params: { client: invalid_attributes }, headers: valid_headers, as: :json
+        # an id not possible to the db
+        my_url = "#{clients_url}/-666"
+        patch my_url,
+              params: { client: invalid_attributes }, 
+              headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including("application/json"))
       end
@@ -117,11 +150,25 @@ RSpec.describe "/clients", type: :request do
   end
 
   describe "DELETE /destroy" do
-    it "destroys the requested client" do
-      client = Client.create! valid_attributes
-      expect {
-        delete client_url(client), headers: valid_headers, as: :json
-      }.to change(Client, :count).by(-1)
+    context "with valid parameters" do
+
+      it "destroys the requested client" do
+        client = Client.create! valid_entity
+        expect {
+          delete clients_url(client), 
+              params: { client: client }, 
+              headers: valid_headers, as: :json
+        }.to change(Client, :count).by(-1)
+      end
+
+      it "HTTP 204 'NOT found' code to the requested client" do
+        # an id not possible to the db
+        client = Client.new(id: -1)
+        my_url = "#{clients_url}/#{client[:id]}"
+        delete my_url, 
+          params: { client: client }, headers: valid_headers, as: :json
+        expect(response).to have_http_status(:no_content)
+      end
     end
   end
 end

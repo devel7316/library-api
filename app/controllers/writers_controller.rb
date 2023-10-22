@@ -3,7 +3,7 @@ class WritersController < ApplicationController
 
   # GET /writers
   def index
-    #puts "INDEX #{params[:writer]}"
+    #puts "\nCTRL /writers INDEX"
     local = params[:writer].to_s
     if (local == "{}") or (local == "")
       #local = "\"id\": 0, \"name\": \"count:#{Genre.count}\""
@@ -26,6 +26,7 @@ end
 
   # GET /writers/1
   def show
+    #puts "\nCTRL /writers SHOW"
     #puts "SHOW id[#{params[:id]}] @writer[#{@writer.as_json}]"
     #render json: @writer
     render json: "{\"id\": 0, \"name\": \"not implemented\"}" 

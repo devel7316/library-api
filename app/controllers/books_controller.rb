@@ -3,6 +3,7 @@ class BooksController < ApplicationController
 
   # GET /books
   def index
+    #puts "\nCTRL /books INDEX"
 
     local = params[:book].to_s
     if (local == "{}") or (local == "")
@@ -25,8 +26,8 @@ class BooksController < ApplicationController
 
   # GET /books/1
   def show
+    #puts "\nCTRL /books SHOW"    
     # @error must be set in 'set_book'
-    #puts "\nCTRL /show params:[#{params.to_s}]"
     if (@error != :ok)  
       render json: @book.errors, status: @error
 

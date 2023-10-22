@@ -72,6 +72,7 @@ RSpec.describe "/books", type: :request do
     it "with 204 HTTP 'NOT found' code for the book" do
       # an not possible id to the db
       my_url = book_url("-99")
+      #puts "RSPEC #{my_url}"
       get my_url, headers: valid_headers, as: :json
       expect(response).to have_http_status(:no_content)
     end

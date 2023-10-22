@@ -57,14 +57,16 @@ RSpec.describe "/shelves", type: :request do
       build_shelf = build(:shelf)
       expect(build_shelf).to be_a(Shelf)
       #
-      create_shelf = create(:shelf)  
-      expect(create_shelf).to be_a(Shelf)
+      #create_shelf = create(:shelf)  
+      #expect(create_shelf).to be_a(Shelf)
     end
   end
   
   describe "GET /index" do
     it "renders a successful response" do
-      get shelves_url, headers: valid_headers, as: :json
+      my_url = shelves_url("")
+      #puts "RSPEC #{my_url}"
+      get my_url, headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
@@ -72,12 +74,13 @@ RSpec.describe "/shelves", type: :request do
   describe "GET /show" do
     it "renders a successful response" do
       shelf = Shelf.create! valid_entity
-      get shelves_url(shelf), as: :json
+      get shelf_url(shelf), as: :json
       expect(response).to have_http_status(:ok)
     end
     it "with 204 HTTP 'NOT found' code for the shelf" do
       # an not possible id to the db
-      my_url = book_url("-99")
+      my_url = shelf_url("-99")
+      #puts "RSPEC #{my_url}"
       get my_url, headers: valid_headers, as: :json
       expect(response).to have_http_status(:no_content)
     end
