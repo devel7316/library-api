@@ -188,6 +188,12 @@ curl -X DELETE http://localhost:3000/clients -H 'Content-Type: application/json;
 # --- provide a valid id so as to return OK
 curl -X DELETE http://localhost:3000/clients -H 'Content-Type: application/json; Accept: application/json;' -d '{"id":21}'
 
+#
+# Desk Services
+# -------------------------------------------------------------------------
+# 
+# /desk/consult GET #index [op_id, name, person_id, book_id/books[] ] 
+curl -X GET http://localhost:3000/desk/consult -H 'Content-Type: application/json; Accept: application/json;' -d '{"order": 1, "name": "Thersa Rodriguez", "person_id": 0, "book_id": 1}'
 # -------------------------------------------------------------------------
 * Services (job queues, cache servers, search engines, etc.)
 

@@ -15,18 +15,27 @@ Rails.application.routes.draw do
   patch 'books', to: 'books#update'
   delete 'books', to: 'books#destroy'
   #
+  resources :clients
+  get 'clients', to: 'clients#show'
+  patch 'clients', to: 'clients#update'
+  delete 'clients', to: 'clients#destroy'
+#
   resources :shelves
   get 'shelves', to: 'shelves#show'
   patch 'shelves', to: 'shelves#update'
   delete 'shelves', to: 'shelves#destroy'
   #
-  resources :clients
-  get 'clients', to: 'clients#show'
-  patch 'clients', to: 'clients#update'
-  delete 'clients', to: 'clients#destroy'
+  post 'shelf_available', to: 'shelf#available'
+  #
+  #
+  #get 'desk', to: 'desk#show'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
   # root "articles#index"
+  namespace :desk, defaults: { format: :json } do
+    resources :consult, only: [:index]
+  end
+
 end
